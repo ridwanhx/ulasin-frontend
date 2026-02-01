@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import api from "../api/axios";
-import AuthCard from "../components/AuthCard";
-import LoginForm from "../components/LoginForm";
-import RegisterForm from "../components/RegisterForm";
+import AuthCard from "../components/auth/AuthCard";
+import LoginForm from "../components/auth/LoginForm";
+import RegisterForm from "../components/auth/RegisterForm";
 
 const Login = () => {
     // Inisialisasi State Management

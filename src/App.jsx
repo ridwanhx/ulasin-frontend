@@ -1,15 +1,15 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Login from "./pages/Login";
+import MovieList from "./pages/movie/MovieList";
 
 function App() {
   return (
-    <div className="h-screen w-screen">
-      <BrowserRouter>
-        <Routes>
-          <Route path="/login" element={<Login />} />
-        </Routes>
-      </BrowserRouter>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route path="/movies" element={ <MovieList/> } />
+      </Routes>
+    </BrowserRouter>
   );
 }
 
