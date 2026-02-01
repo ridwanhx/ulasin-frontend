@@ -3,9 +3,12 @@ import api from "../api/axios";
 import AuthCard from "../components/auth/AuthCard";
 import LoginForm from "../components/auth/LoginForm";
 import RegisterForm from "../components/auth/RegisterForm";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
     // Inisialisasi State Management
+    const navigate = useNavigate();
+
     const [isLoginMode, setIsLoginMode] = useState(true);
     const [showPassword, setShowPassword] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
@@ -46,6 +49,12 @@ const Login = () => {
             if (isLoginMode) {
                 localStorage.setItem('token', response.data.token);
                 setSuccessMsg('Berhasil masuk! Mengalihkan...');
+
+                // Redirect ke halaman utama
+                setTimeout(() => {
+                    navigate('/');
+                    window.location.reload();   // paksa reload untuk update state navbar
+                }, 1500);
             } else {
                 setSuccessMsg("Registrasi berhasil! Silahkan masuk.");
                 setTimeout(() => setIsLoginMode(true), 2000)

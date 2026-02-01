@@ -1,8 +1,9 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 const MovieCard = ({ movie }) => {
   return (
-    <div className="group relative glass-card rounded-2xl overflow-hidden transition-all duration-500 hover:scale-[1.03] hover:shadow-2xl hover hover:shadow-[#e50914]/20 cursor-pointer">
+    <Link to={`/movie/${movie.id}`} className="group relative glass-card rounded-2xl overflow-hidden transition-all duration-500 hover:scale-[1.03] hover:shadow-2xl hover hover:shadow-[#e50914]/20 cursor-pointer">
       {/* Container Poster */}
       <div className="w-full overflow-hidden aspect-[2/3]">
         <img
@@ -44,7 +45,7 @@ const MovieCard = ({ movie }) => {
           </span>
         </div>
       </div>
-    </div>
+    </Link>
   );
 };
 
