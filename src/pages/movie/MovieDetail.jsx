@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import api from '../../api/axios';
+import ReviewModal from "../../components/review/ReviewModal";
 
 const MovieDetail = () => {
     const { id } = useParams();
@@ -9,20 +10,68 @@ const MovieDetail = () => {
     const [isLoading, setIsLoading] = useState(true);
     const token = localStorage.getItem('token');
 
-    useEffect(() => { 
-        // fetching movie detail
-        const fetchMovieDetail = async () => {
-            try {
-                const response = await api.get(`/movies/${id}`);
-                setMovie(response.data.data);
-            } catch (err) {
-                console.error("Error fetching movie detail: ", err);
-            } finally {
-                setIsLoading(false);
-            }
-        };
-        fetchMovieDetail();
+    // State untuk Modal
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isSubmittingReview, setIsSubmittingReview] = useState(false);
+    const [reviewError, setReviewError] = useState('');
+
+    // Gunakan useCallback agar fungsi fetch tidak dibuat ulang setiap render
+    const fetchMovieDetail = useCallback(async () => {
+        try {
+            const response = await api.get(`/movies/${id}`);
+            setMovie(response.data.data);
+        } catch (err) {
+            console.error("Error fetching movie detail: ", err);
+        } finally {
+            setIsLoading(false);
+        }
     }, [id]);
+
+    useEffect(() => {
+        fetchMovieDetail();
+    }, [fetchMovieDetail]);
+
+    // Fungsi Handle Submit Review ke Backend
+    const handleSubmitReview = async (reviewData) => {
+        setIsSubmittingReview(true);
+        setReviewError('');
+
+        try {
+            // Ambil token terbaru dari localStorage
+            const currentToken = localStorage.getItem('token');
+
+            if (!currentToken) {
+                setReviewError("Sesi Anda habis, silahkan login kembali.")
+                navigate('/login');
+                return;
+            }
+
+            // Payload sesuai struktur database: movie_id, skor, komentar
+            // user_id akan diambil otomatis oleh backend dari token JWT
+            const payload = {
+                movie_id: parseInt(id), // pastikan ID film berupa integer
+                skor: reviewData.skor,
+                komentar: reviewData.komentar,
+            };
+
+            // Kirim POST request (token otomatis disertakan oleh axios interceptor jika ada)
+            await api.post(`/movies/${id}/reviews`, payload, {
+                headers: { Authorization: `Bearer ${currentToken}` }   // Explicitly add header just in case
+            });
+
+            // Jika sukses:
+            setIsModalOpen(false);  // Tutup modal
+            setIsLoading(true); // Set loading utama true untuk fetch ulang
+            fetchMovieDetail(); // Fetch ulang data filmagar ulasan baru muncul
+        } catch (err) {
+            console.error("Detail Error: ", err.response?.data);
+            // Tangkap error dari backend
+            const msg = err.response?.data?.message || 'Gagal mengirim ulasan. Coba lagi.';
+            setReviewError(msg);
+        } finally {
+            setIsSubmittingReview(false);
+        }
+    };
 
     if (isLoading) return (
         <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center">
@@ -106,16 +155,18 @@ const MovieDetail = () => {
                         {/* Tombol Aksi */}
                         <div className="flex gap-4">
                             {token ? (
-                                <button className="bg-[#E50914] hover:bg-[#b90710] text-white px-8 py-4 rounded-xl font-bold transition-all flex items-center gap-2 shadow-lg shadow-[#e50914]/20">
+                                <button
+                                    onClick={() => setIsModalOpen(true)}
+                                    className="bg-[#E50914] hover:bg-[#b90710] text-white px-8 py-4 rounded-xl font-bold transition-all flex items-center gap-2 shadow-lg shadow-[#e50914]/20">
                                     <span className="text-xl">
                                         +
                                     </span>
                                     Tulis Ulasan Kamu
                                 </button>
                             ) : (
-                                    <button onClick={() => navigate('/login')} className="bg-white/5 hover:bg-white/10 border border-white/10 text-white px-8 py-4 rounded-xl font-bold transition-all">
-                                        Masuk untuk Review
-                                    </button>
+                                <button onClick={() => navigate('/login')} className="bg-white/5 hover:bg-white/10 border border-white/10 text-white px-8 py-4 rounded-xl font-bold transition-all">
+                                    Masuk untuk Review
+                                </button>
                             )}
                         </div>
                     </div>
@@ -159,22 +210,36 @@ const MovieDetail = () => {
                                         </div>
                                     </div>
                                     <p className="text-gray-300 leading-relaxed italic">
-                                        "{ review.Komentar }"
+                                        "{review.Komentar}"
                                     </p>
                                 </div>
                             ))
                         ) : (
-                                <div className="text-center py-20 glass-card rounded-2xl border border-dashed border-white/10">
-                                    <p className="text-gray-500">
-                                        Belum ada ulasan untuk film ini. Jadi yang pertama mengulas!
-                                    </p>
-                                </div>
+                            <div className="text-center py-20 glass-card rounded-2xl border border-dashed border-white/10">
+                                <p className="text-gray-500">
+                                    Belum ada ulasan untuk film ini. Jadi yang pertama mengulas!
+                                </p>
+                            </div>
                         )}
                     </div>
                 </div>
             </div>
+
+            {/* Render komponen modal */}
+            <ReviewModal
+                isOpen={isModalOpen}
+                onClose={() => {
+                    setIsModalOpen(false);
+                    setReviewError(''); // Reset error saat ditutup
+                }}
+                onSubmit={handleSubmitReview}
+                movieTitle={movie.judul}
+                isSubmitting={isSubmittingReview}
+                errorMsg={reviewError}
+            >
+            </ReviewModal>
         </div>
     );
-}
+};
 
 export default MovieDetail;
