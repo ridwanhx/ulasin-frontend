@@ -87,72 +87,70 @@ const ReviewModal = ({
               />
             </svg>
           </button>
-        </div>
+              </div>
+              
+              {/* Form Body */}
+              <form onSubmit={handleSubmit} className="p-6 space-y-6">
+                  
+                  {/* Rating Input */}
+                  <div>
+                      <label className="block text-sm font-medium text-gray-300 mb-3">
+                          Rating Anda
+                      </label>
+                      <div className="flex gap-2">
+                          { renderStars() }
+                      </div>
+                      <p className="text-sm text-gray-500 mt-2">
+                          Klik bintang untuk memberi skor (1 - 5).
+                      </p>
+                  </div>
 
-        {/* Form Body */}
-        <form onSubmit={handleSubmit} className="p-6 space-y-6">
-          {/* Rating Input */}
-          <div>
-            <label className="block text-sm font-medium text-gray-300 mb-3">
-              Rating Anda
-            </label>
-            <div className="flex gap-2">{renderStars()}</div>
-            <p className="text-sm text-gray-500 mt-2">
-              Klik bintang untuk memberi skor (1 - 5).
-            </p>
-          </div>
+                  {/* Komentar Textarea */}
+                  <div>
+                      <label
+                          htmlFor="komentar"
+                          className="block text-sm font-medium text-gray-300 mb-3"
+                      >
+                          Komentar
+                      </label>
+                      <textarea
+                          id="komentar"
+                          rows="4"
+                          value={komentar}
+                          onChange={(e) => setKomentar(e.target.value)}
+                          className="w-full input-field rounded-xl px-4 py-3 text-white outline-none resize-none focus:border-[#e50914]/50"
+                          placeholder="Bagaimana pendapat Anda tentang film ini?"
+                      ></textarea>
+                  </div>
 
-          {/* Komentar Textarea */}
-          <div>
-            <label
-              htmlFor="komentar"
-              className="block text-sm font-medium text-gray-300 mb-3"
-            >
-              Komentar
-            </label>
-            <textarea
-              id="komentar"
-              rows="4"
-              value={komentar}
-              onChange={(e) => setKomentar(e.target.value)}
-              className="w-full input-field rounded-xl px-4 py-3 text-white outline-none resize-none focus:border-[#e50914]/50"
-              placeholder="Bagaimana pendapat Anda tentang film ini?"
-            ></textarea>
-          </div>
+                  {/* Pesan Error */}
+                  {(localError || errorMsg) && (
+                      <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/50 text-red-500 text-sm text-center animate-pulse">
+                          {localError || errorMsg}
+                      </div>
+                  )}
 
-          {/* Pesan Error */}
-          {(localError || errorMsg) && (
-            <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/50 text-red-500 text-sm text-center animate-pulse">
-              {localError || errorMsg}
-            </div>
-          )}
-
-          {/* Footer Actions */}
-          <div className="flex gap-3 pt-2">
-            <button
-              type="button"
-              onClick={onClose}
-              disabled={isSubmitting}
-              className="flex-1 px-4 py-3 rounded-xl border border-white/10 text-gray-300 hover:bg-white/5 transition-all font-medium"
-            >
-              Batal
-            </button>
-            <button
-              type="submit"
-              disabled={isSubmitting || skor === 0 || !komentar.trim()}
-              className="flex-1 btn-primary rounded-xl py-3 text-white font-bold flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
-            >
-              {isSubmitting ? (
-                <div className="spinner w-5 h-5 border-2"></div>
-              ) : (
-                "Kirim Ulasan"
-              )}
-            </button>
-          </div>
-        </form>
+                  {/* Footer Actions */}
+                  <div className="flex gap-3 pt-2">
+                      <button
+                          type="button"
+                          onClick={onClose}
+                          disabled={isSubmitting}
+                          className="flex-1 px-4 py-3 rounded-xl border border-white/10 text-gray-300 hover:bg-white/5 transition-all font-medium">
+                          Batal
+                      </button>
+                      <button
+                          type="submit"
+                          disabled={isSubmitting || skor === 0 || !komentar.trim()}
+                          className="flex-1 btn-primary rounded-xl py-3 text-white font-bold flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed">
+                          {isSubmitting ? <div className="spinner w-5 h-5 border-2"></div> : 'Kirim Ulasan'}
+                      </button>
+                  </div>
+              </form>
       </div>
     </div>
   );
 };
+
 
 export default ReviewModal;

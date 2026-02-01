@@ -1,10 +1,28 @@
 import React, { useEffect, useState } from "react";
 import api from "../../api/axios";
 import MovieCard from "../../components/movie/MovieCard";
+import { useLocation } from "react-router-dom";
 
 const MovieList = () => {
   const [movies, setMovies] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+
+  const location = useLocation();
+  const [logoutMsg, setLogoutMsg] = useState("");
+
+  // Inisialisasi Effect untuk menangkap pesan dari Navbar
+  useEffect(() => {
+    if (location.state?.message) {
+      setLogoutMsg(location.state.message);
+
+      // Bersihkan state di history agar pesan tidak muncul lagi saat refresh
+      window.history.replaceState({}, document.title);
+
+      // Hilangkan pesan otomatis setelah 4 detik
+      const timer = setTimeout(() => setLogoutMsg(""), 4000);
+      return () => clearTimeout(timer);
+    }
+  }, [location]);
 
   useEffect(() => {
     // Fetching movies from api
@@ -24,8 +42,29 @@ const MovieList = () => {
 
   return (
     <div className="min-h-screen bg-[#0a0a0a] text-white">
+
       {/* Header Halaman */}
       <header className="pt-24 pb-12 px-6 max-w-7xl mx-auto">
+        {/* Tampilan pesan Logout (Floating Alert) */}
+        {logoutMsg && (
+          <div className="mb-8 animate-fade-in">
+            <div className="glass-card border-green-500/50 bg-green-500/10 p-4 rounded-2xl flex items-center gap-3">
+              <div className="w-8 h-8 rounded-full bg-green-500/20 flex items-center justify-center text-green-500">
+                ✓
+              </div>
+              <p className="text-green-400 font-medium">
+                {logoutMsg}
+              </p>
+              <button
+                onClick={() => setLogoutMsg("")}
+                className="ml-auto text-gray-500 hover:text-white"
+              >
+                ✕
+              </button>
+            </div>
+          </div>
+        )}
+        
         <div className="flex flex-col md:flex-row md-:items-end justify-between gap-4">
           <div>
             <h2 className="text-4xl font-extrabold mb-2">

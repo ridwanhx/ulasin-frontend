@@ -201,7 +201,8 @@ const MovieDetail = () => {
                                             </div>
                                         </div>
                                         <div className="bg-white/5 px-3 py-1 rounded-lg flex items-center gap-1 border border-white/5">
-                                            <span className="text-yellow-500">
+                                            <span
+                                                className="text-yellow-500">
                                                 ★
                                             </span>
                                             <span className="font-bold">
