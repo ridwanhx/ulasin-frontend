@@ -10,6 +10,13 @@ const MovieList = () => {
   const location = useLocation();
   const [logoutMsg, setLogoutMsg] = useState("");
 
+  // filter by genre
+  const [selectedGenre, setSelectedGenre] = useState("");
+  // ambil daftar genre unik (dinamis dari data)
+  const genres = [
+    ...new Set(movies.map((movie) => movie.genre).filter(Boolean)),
+  ];
+
   // Inisialisasi Effect untuk menangkap pesan dari Navbar
   useEffect(() => {
     if (location.state?.message) {
@@ -39,6 +46,11 @@ const MovieList = () => {
     };
     fetchMovies();
   }, []);
+
+  // Data hasil filter
+  const filteredMovies = selectedGenre ? movies.filter(
+    (movie) => movie.genre?.toLowerCase() === selectedGenre.toLowerCase()
+  ) : movies;
 
   return (
     <div className="min-h-screen bg-[#0a0a0a] text-white">
@@ -74,10 +86,14 @@ const MovieList = () => {
           </div>
           <div className="flex gap-3">
             {/* Filter (Opsional) */}
-            <select className="bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-sm outline-none focus:border-[#e50914]">
+            <select
+              value={selectedGenre}
+              onChange={(e) => setSelectedGenre(e.target.value)}
+              className="bg-white/5 text-gray-400 border border-white/10 rounded-xl px-4 py-2 text-sm outline-none focus:border-[#e50914]">
               <option value="">Semua Genre</option>
-              <option value="Action">Action</option>
-              <option value="Horror">Horror</option>
+              {genres.map((genre) => (
+                <option key={genre} value={genre}>{genre}</option>
+              ))}
             </select>
           </div>
         </div>
@@ -91,16 +107,16 @@ const MovieList = () => {
           </div>
         ) : (
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 animate-fade-in">
-            {movies.map((movie) => (
+            {filteredMovies.map((movie) => (
               <MovieCard key={movie.id} movie={movie} />
             ))}
           </div>
         )}
 
         {/* Jika data movie kosong */}
-        {!isLoading && movies.length === 0 && (
+        {!isLoading && filteredMovies.length === 0 && (
           <div className="text-center py-20">
-            <p className="text-gray-500">Belum ada film yang tersedia</p>
+            <p className="text-gray-500">Tidak ada film dengan genre tersebut</p>
           </div>
         )}
       </main>
