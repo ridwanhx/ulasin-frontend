@@ -10,6 +10,7 @@ import {
   updateMovie,
   deleteMovie,
 } from "../../services/MovieService";
+import MovieDetailModal from "../../components/admin/MovieDetailModal";
 
 export default function MovieManage() {
   const [movies, setMovies] = useState([]);
@@ -18,6 +19,10 @@ export default function MovieManage() {
 
   const [showModal, setShowModal] = useState(false);
   const [selectedMovie, setSelectedMovie] = useState(null);
+
+  // Detail Movie
+  const [showDetailModal, setShowDetailModal] = useState(false);
+  const [detailMovie, setDetailMovie] = useState(null);
 
   // Alert
   const [alert, setAlert] = useState({
@@ -82,6 +87,11 @@ export default function MovieManage() {
   const handleAddMovie = () => {
     setSelectedMovie(null);
     setShowModal(true);
+  };
+
+  const handleViewMovie = (movie) => {
+    setDetailMovie(movie);
+    setShowDetailModal(true);
   };
 
   const handleEditMovie = (movie) => {
@@ -163,19 +173,21 @@ export default function MovieManage() {
           <div className="glass-card border border-white/10 shadow-2xl rounded-2xl overflow-hidden">
             <div className="flex items-center justify-between px-6 py-4 border-b border-white/10">
               <div className="block">
-                <h2 className="text-lg font-semibold text-white">Daftar Movie</h2>
+                <h2 className="text-lg font-semibold text-white">
+                  Daftar Movie
+                </h2>
                 <span className="text-sm text-gray-400">
                   Total: {movies.length}
                 </span>
               </div>
               {/* Search */}
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Cari berdasarkan keyword..."
-              className="w-full md:w-80 px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-sm text-white outline-none focus:border-[#e50914]/60"
-            />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Cari berdasarkan keyword..."
+                className="w-full md:w-80 px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-sm text-white outline-none focus:border-[#e50914]/60"
+              />
             </div>
             <div className="p-6">
               {loading ? (
@@ -192,6 +204,7 @@ export default function MovieManage() {
                     movies={paginatedMovies}
                     onEdit={handleEditMovie}
                     onDelete={handleDeleteMovie}
+                    onView={handleViewMovie}
                   />
 
                   {/* Pagination */}
@@ -214,6 +227,14 @@ export default function MovieManage() {
           movie={selectedMovie}
           onClose={() => setShowModal(false)}
           onSubmit={handleSaveMovie}
+        />
+      )}
+
+      {/* Detail Movie Modal */}
+      {showDetailModal && (
+        <MovieDetailModal
+          movie={detailMovie}
+          onClose={() => setShowDetailModal(false)}
         />
       )}
     </div>

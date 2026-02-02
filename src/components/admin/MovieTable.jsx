@@ -1,4 +1,4 @@
-export default function MovieTable({ movies, onEdit, onDelete }) {
+export default function MovieTable({ movies, onEdit, onDelete, onView }) {
     return (
         <div className="overflow-x-auto">
             <table className="w-full border-collapse">
@@ -48,8 +48,14 @@ export default function MovieTable({ movies, onEdit, onDelete }) {
                                 <td className="px-4 py-4 text-center">
                                     <div className="flex justify-center gap-2">
                                         <button
-                                            onClick={() => onEdit(movie)}
+                                            onClick={() => onView(movie)}
                                             className="px-3 py-1.5 text-xs rounded-lg bg-blue-600/20 text-blue-400 hover:bg-blue-600/30 transition"
+                                        >
+                                            Detail
+                                        </button>
+                                        <button
+                                            onClick={() => onEdit(movie)}
+                                            className="px-3 py-1.5 text-xs rounded-lg bg-amber-600/20 text-amber-400 hover:bg-amber-600/30 transition"
                                         >
                                             Edit
                                         </button>
