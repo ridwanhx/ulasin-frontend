@@ -33,11 +33,30 @@ export default function MovieManage() {
     }, 4000);
   };
 
+  // Search
+  const [searchQuery, setSearchQuery] = useState("");
+  // Search
+  const filteredMovies = movies.filter((movie) => {
+    const keyword = searchQuery.toLowerCase();
+
+    return (
+      movie.judul?.toLowerCase().includes(keyword) ||
+      movie.sutradara?.toLowerCase().includes(keyword) ||
+      movie.genre?.toLowerCase().includes(keyword) ||
+      movie.tahun_rilis?.toString().includes(keyword)
+    );
+  });
+
+  // reset halaman saat search berubah
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery]);
+
   // pagination
   const ITEMS_PER_PAGE = 5;
   const [currentPage, setCurrentPage] = useState(1);
-  const totalPages = Math.ceil(movies.length / ITEMS_PER_PAGE);
-  const paginatedMovies = movies.slice(
+  const totalPages = Math.ceil(filteredMovies.length / ITEMS_PER_PAGE);
+  const paginatedMovies = filteredMovies.slice(
     (currentPage - 1) * ITEMS_PER_PAGE,
     currentPage * ITEMS_PER_PAGE,
   );
@@ -143,10 +162,20 @@ export default function MovieManage() {
           {/* Table Card */}
           <div className="glass-card border border-white/10 shadow-2xl rounded-2xl overflow-hidden">
             <div className="flex items-center justify-between px-6 py-4 border-b border-white/10">
-              <h2 className="text-lg font-semibold text-white">Daftar Movie</h2>
-              <span className="text-sm text-gray-400">
-                Total: {movies.length}
-              </span>
+              <div className="block">
+                <h2 className="text-lg font-semibold text-white">Daftar Movie</h2>
+                <span className="text-sm text-gray-400">
+                  Total: {movies.length}
+                </span>
+              </div>
+              {/* Search */}
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Cari berdasarkan keyword..."
+              className="w-full md:w-80 px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-sm text-white outline-none focus:border-[#e50914]/60"
+            />
             </div>
             <div className="p-6">
               {loading ? (
