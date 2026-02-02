@@ -11,6 +11,7 @@ import Navbar from "./components/util/Navbar";
 
 // Admin
 import Dashboard from "./pages/admin/Dashboard";
+import MovieManage from "./pages/admin/MovieManage";
 
 // Helper untuk mengatur tampilan Navbar
 const Layout = ({ children }) => {
@@ -42,6 +43,7 @@ function App() {
           {/* Admin */}
           <Route path="/admin/login" element={ <Login isAdmin/> } />
           <Route path="/admin/dashboard" element={ <Dashboard/> } />
+          <Route path="/admin/movies" element={ <MovieManage/> } />
         </Routes>
       </Layout>
     </Router>
