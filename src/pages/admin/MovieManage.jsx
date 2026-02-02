@@ -3,6 +3,7 @@ import AdminNavbar from "../../components/admin/util/AdminNavbar";
 import MovieTable from "../../components/admin/MovieTable";
 import MovieModal from "../../components/admin/MovieModal";
 import { AdminAlert } from "../../components/admin/util/AdminAlert";
+import { Pagination } from "../../components/admin/util/Pagination";
 import {
   getMovies,
   createMovie,
@@ -23,15 +24,23 @@ export default function MovieManage() {
     type: "",
     message: "",
   });
-
   // Helper
-const showAlert = (type, message) => {
-  setAlert({ type, message });
+  const showAlert = (type, message) => {
+    setAlert({ type, message });
 
-  setTimeout(() => {
-    setAlert({ type: "", message: "" });
-  }, 4000);
-};
+    setTimeout(() => {
+      setAlert({ type: "", message: "" });
+    }, 4000);
+  };
+
+  // pagination
+  const ITEMS_PER_PAGE = 5;
+  const [currentPage, setCurrentPage] = useState(1);
+  const totalPages = Math.ceil(movies.length / ITEMS_PER_PAGE);
+  const paginatedMovies = movies.slice(
+    (currentPage - 1) * ITEMS_PER_PAGE,
+    currentPage * ITEMS_PER_PAGE,
+  );
 
   useEffect(() => {
     fetchMovies();
@@ -67,9 +76,10 @@ const showAlert = (type, message) => {
     try {
       await deleteMovie(id);
       showAlert("success", "Movie berhasil dihapus 🗑️");
+      setCurrentPage(1);
       fetchMovies();
     } catch (err) {
-      showAlert("danger", "Gagal menghapus movie")
+      showAlert("danger", "Gagal menghapus movie");
       console.error(err);
     }
   };
@@ -78,9 +88,11 @@ const showAlert = (type, message) => {
     try {
       if (selectedMovie) {
         await updateMovie(selectedMovie.id, formData);
+        setCurrentPage(1);
         showAlert("success", "Movie berhasil diperbarui 🎬");
       } else {
         await createMovie(formData);
+        setCurrentPage(1);
         showAlert("success", "Movie berhasil ditambahkan 🎉");
       }
       setShowModal(false);
@@ -88,7 +100,7 @@ const showAlert = (type, message) => {
     } catch (err) {
       showAlert(
         "danger",
-        `Gagal ${selectedMovie ? "mengupdate" : "menambahkan"} movie`
+        `Gagal ${selectedMovie ? "mengupdate" : "menambahkan"} movie`,
       );
       console.error(err);
     }
@@ -146,11 +158,20 @@ const showAlert = (type, message) => {
                   {error}
                 </div>
               ) : (
-                <MovieTable
-                  movies={movies}
-                  onEdit={handleEditMovie}
-                  onDelete={handleDeleteMovie}
-                />
+                <>
+                  <MovieTable
+                    movies={paginatedMovies}
+                    onEdit={handleEditMovie}
+                    onDelete={handleDeleteMovie}
+                  />
+
+                  {/* Pagination */}
+                  <Pagination
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    onPageChange={setCurrentPage}
+                  />
+                </>
               )}
             </div>
           </div>
