@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import AdminNavbar from "../../components/admin/util/AdminNavbar";
 import MovieTable from "../../components/admin/MovieTable";
 import MovieModal from "../../components/admin/MovieModal";
+import { AdminAlert } from "../../components/admin/util/AdminAlert";
 import {
   getMovies,
   createMovie,
@@ -16,6 +17,21 @@ export default function MovieManage() {
 
   const [showModal, setShowModal] = useState(false);
   const [selectedMovie, setSelectedMovie] = useState(null);
+
+  // Alert
+  const [alert, setAlert] = useState({
+    type: "",
+    message: "",
+  });
+
+  // Helper
+const showAlert = (type, message) => {
+  setAlert({ type, message });
+
+  setTimeout(() => {
+    setAlert({ type: "", message: "" });
+  }, 4000);
+};
 
   useEffect(() => {
     fetchMovies();
@@ -50,9 +66,10 @@ export default function MovieManage() {
 
     try {
       await deleteMovie(id);
+      showAlert("success", "Movie berhasil dihapus 🗑️");
       fetchMovies();
     } catch (err) {
-      alert("Gagal menghapus movie");
+      showAlert("danger", "Gagal menghapus movie")
       console.error(err);
     }
   };
@@ -61,13 +78,18 @@ export default function MovieManage() {
     try {
       if (selectedMovie) {
         await updateMovie(selectedMovie.id, formData);
+        showAlert("success", "Movie berhasil diperbarui 🎬");
       } else {
         await createMovie(formData);
+        showAlert("success", "Movie berhasil ditambahkan 🎉");
       }
       setShowModal(false);
       fetchMovies();
     } catch (err) {
-      alert(`Gagal ${selectedMovie ? "mengupdate" : "menambahkan"} movie`);
+      showAlert(
+        "danger",
+        `Gagal ${selectedMovie ? "mengupdate" : "menambahkan"} movie`
+      );
       console.error(err);
     }
   };
@@ -76,6 +98,14 @@ export default function MovieManage() {
     <div className="min-h-screen bg-[#0a0a0a] text-white">
       <AdminNavbar />
 
+      {/* Alert */}
+      <div className="fixed top-24 left-1/2 -translate-x-1/2 z-50 w-full max-w-xl px-6">
+        <AdminAlert
+          type={alert.type}
+          message={alert.message}
+          onClose={() => setAlert({ type: "", message: "" })}
+        />
+      </div>
       {/* Content */}
       <main className="pt-28 px-6">
         <section className="max-w-7xl mx-auto">
