@@ -5,8 +5,7 @@ import LoginForm from "../components/auth/LoginForm";
 import RegisterForm from "../components/auth/RegisterForm";
 import { useNavigate } from "react-router-dom";
 
-const Login = () => {
-  // Inisialisasi State Management
+const Login = ({ isAdmin = false }) => {
   const navigate = useNavigate();
 
   const [isLoginMode, setIsLoginMode] = useState(true);
@@ -17,57 +16,50 @@ const Login = () => {
   const [formData, setFormData] = useState({
     nama: "",
     email: "",
-    pasword: "",
+    password: "",
     confirmPassword: "",
   });
 
-  // inisialisasi handler input
   const handleInputChange = (e) => {
-    const { id, value } = e.target;
-    setFormData((prev) => ({ ...prev, [id]: value }));
-    if (errors[id]) setErrors((prev) => ({ ...prev, [id]: "" }));
-  };
-
-  // inisialisasi validation rules
-  const validate = () => {
-    let newErrors = {};
-    if (!formData.email) newErrors.email = "Email wajib diisi";
-    if (!formData.password) newErrors.password = "Password wajib diisi";
-    if (!isLoginMode) {
-      if (!formData.nama) newErrors.nama = "Nama wajib diisi";
-      if (formData.password !== formData.confirmPassword)
-        newErrors.confirmPassword = "Password tidak cocok";
-    }
-    return newErrors;
+    setFormData({ ...formData, [e.target.id]: e.target.value });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const valErrors = validate();
-    if (Object.keys(valErrors).length > 0) return setErrors(valErrors);
-
     setIsLoading(true);
     setErrors({});
+
     try {
       const endpoint = isLoginMode ? "/login" : "/register";
-      const response = await api.post(endpoint, formData);
+      const res = await api.post(endpoint, {
+        ...formData,
+        role: isAdmin ? "admin" : "user", // ⬅️ PENTING
+      });
 
       if (isLoginMode) {
-        localStorage.setItem("token", response.data.token);
-        setSuccessMsg("Berhasil masuk! Mengalihkan...");
+        localStorage.setItem("token", res.data.token);
 
-        // Redirect ke halaman utama
+        // OPTIONAL: validasi role dari backend
+        if (isAdmin && res.data.user.role !== "admin") {
+          throw new Error("Bukan akun admin");
+        }
+
+        setSuccessMsg("Login berhasil!");
+
         setTimeout(() => {
-          navigate("/");
-          window.location.reload(); // paksa reload untuk update state navbar
-        }, 1500);
+          navigate(isAdmin ? "/admin/dashboard" : "/");
+          window.location.reload();
+        }, 1200);
       } else {
-        setSuccessMsg("Registrasi berhasil! Silahkan masuk.");
-        setTimeout(() => setIsLoginMode(true), 2000);
+        setSuccessMsg("Registrasi berhasil!");
+        setIsLoginMode(true);
       }
     } catch (err) {
       setErrors({
-        server: err.response?.data?.message || "Terjadi kesalahan server",
+        server:
+          err.response?.data?.message ||
+          err.message ||
+          "Gagal login",
       });
     } finally {
       setIsLoading(false);
@@ -75,39 +67,32 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen w-full relative flex items-center justify-center p-4 bg-[#0a0a0a] overflow-hidden">
-      {/* Background Poster Grid */}
-      <div className="poster-grid opacity-20">
-        {[...Array(24)].map((_, i) => (
-          <div
-            key={i}
-            className="poster-item h-40 w-full bg-white/5 rounded-lg"
-          ></div>
-        ))}
-      </div>
-
+    <div className="min-h-screen flex items-center justify-center bg-[#0a0a0a]">
       <AuthCard
         isLoginMode={isLoginMode}
         setIsLoginMode={setIsLoginMode}
         successMsg={successMsg}
+        hideRegister={isAdmin}   // ⬅️ KEY POINT
       >
-        {isLoginMode ? (
+        {isLoginMode && (
           <LoginForm
             FormData={formData}
             errors={errors}
-            isLoading={isLoading}
             onChange={handleInputChange}
             onSubmit={handleSubmit}
+            isLoading={isLoading}
             showPassword={showPassword}
             togglePassword={() => setShowPassword(!showPassword)}
           />
-        ) : (
+        )}
+
+        {!isAdmin && !isLoginMode && (
           <RegisterForm
             formData={formData}
             errors={errors}
-            isLoading={isLoading}
             onChange={handleInputChange}
             onSubmit={handleSubmit}
+            isLoading={isLoading}
             showPassword={showPassword}
             togglePassword={() => setShowPassword(!showPassword)}
           />
