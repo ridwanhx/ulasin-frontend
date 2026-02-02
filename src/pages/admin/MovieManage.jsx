@@ -99,14 +99,22 @@ export default function MovieManage() {
           </div>
 
           {/* Table Card */}
-          <div className="bg-white rounded-xl shadow-sm text-gray-900">
+          <div className="glass-card border border-white/10 shadow-2xl rounded-2xl overflow-hidden">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-white/10">
+              <h2 className="text-lg font-semibold text-white">Daftar Movie</h2>
+              <span className="text-sm text-gray-400">
+                Total: {movies.length}
+              </span>
+            </div>
             <div className="p-6">
               {loading ? (
-                <div className="text-center py-10 text-gray-500">
+                <div className="text-center py-12 text-gray-400 animate-pulse">
                   Loading data movie...
                 </div>
               ) : error ? (
-                <div className="text-center py-10 text-red-600">{error}</div>
+                <div className="text-center py-12 text-red-500 font-medium">
+                  {error}
+                </div>
               ) : (
                 <MovieTable
                   movies={movies}

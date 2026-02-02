@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import api from "../../api/axios";
-import StatCard from "../../components/admin/cards/StarCard";
+import StatCard from "../../components/admin/cards/StatCard";
 import LoadingState from "../../components/admin/util/LoadingState";
 import AdminNavbar from "../../components/admin/util/AdminNavbar";
 

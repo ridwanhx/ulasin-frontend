@@ -3,29 +3,29 @@ export default function MovieTable({ movies, onEdit, onDelete }) {
         <div className="overflow-x-auto">
             <table className="w-full border-collapse">
                 <thead>
-                    <tr className="bg-gray-100 border-b-2 border-gray-300">
-                        <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">ID</th>
-                        <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Poster</th>
-                        <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Judul</th>
-                        <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Sutradara</th>
-                        <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Genre</th>
-                        <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Tahun</th>
-                        <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Sinopsis</th>
-                        <th className="px-4 py-3 text-center text-sm font-semibold text-gray-700">Aksi</th>
+                    <tr className="border-b border-white/10 text-gray-400">
+                        <th className="px-4 py-3 text-left">No.</th>
+                        <th className="px-4 py-3 text-left">Poster</th>
+                        <th className="px-4 py-3 text-left">Judul</th>
+                        <th className="px-4 py-3 text-left">Sutradara</th>
+                        <th className="px-4 py-3 text-left">Genre</th>
+                        <th className="px-4 py-3 text-left">Tahun</th>
+                        <th className="px-4 py-3 text-left">Sinopsis</th>
+                        <th className="px-4 py-3 text-center">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
                     {movies.length === 0 ? (
                         <tr>
-                            <td colSpan="8" className="px-4 py-8 text-center text-gray-500">
+                            <td colSpan="8" className="py-10 text-center text-gray-500">
                                 Belum ada data movie
                             </td>
                         </tr>
                     ) : (
-                        movies.map((movie) => (
-                            <tr key={movie.id} className="border-b border-gray-200 hover:bg-gray-50">
-                                <td className="px-4 py-3 text-sm text-gray-700">{movie.id}</td>
-                                <td className="px-4 py-3">
+                        movies.map((movie, index) => (
+                            <tr key={movie.id} className="border-b border-white/5 hover:bg-white/5 transition">
+                                <td className="px-4 py-4 text-gray-400">{index + 1}</td>
+                                <td className="px-4 py-4">
                                     {movie.poster ? (
                                         <img
                                             src={movie.poster}
@@ -33,29 +33,29 @@ export default function MovieTable({ movies, onEdit, onDelete }) {
                                             className="w-12 h-16 object-cover rounded"
                                         />
                                     ) : (
-                                        <div className="w-12 h-16 bg-gray-200 rounded flex items-center justify-center text-gray-400 text-xs">
+                                        <div className="w-12 h-16 bg-white/10 rounded-lg flex items-center justify-center text-xs text-gray-500">
                                             No Image
                                         </div>
                                     )}
                                 </td>
-                                <td className="px-4 py-3 text-sm font-medium text-gray-900">{movie.judul}</td>
-                                <td className="px-4 py-3 text-sm text-gray-700">{movie.sutradara}</td>
-                                <td className="px-4 py-3 text-sm text-gray-700">{movie.genre}</td>
-                                <td className="px-4 py-3 text-sm text-gray-700">{movie.tahun_rilis}</td>
-                                <td className="px-4 py-3 text-sm text-gray-600 max-w-xs truncate">
+                                <td className="px-4 py-4 font-medium text-white">{movie.judul}</td>
+                                <td className="px-4 py-4 text-gray-300">{movie.sutradara}</td>
+                                <td className="px-4 py-4 text-gray-300">{movie.genre}</td>
+                                <td className="px-4 py-4 text-gray-300">{movie.tahun_rilis}</td>
+                                <td className="px-4 py-4 text-gray-400 max-w-xs truncate">
                                     {movie.sinopsis}
                                 </td>
-                                <td className="px-4 py-3 text-center">
+                                <td className="px-4 py-4 text-center">
                                     <div className="flex justify-center gap-2">
                                         <button
                                             onClick={() => onEdit(movie)}
-                                            className="px-3 py-1 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 transition"
+                                            className="px-3 py-1.5 text-xs rounded-lg bg-blue-600/20 text-blue-400 hover:bg-blue-600/30 transition"
                                         >
                                             Edit
                                         </button>
                                         <button
                                             onClick={() => onDelete(movie.id)}
-                                            className="px-3 py-1 bg-red-600 text-white text-sm rounded hover:bg-red-700 transition"
+                                            className="px-3 py-1.5 text-xs rounded-lg bg-red-600/20 text-red-400 hover:bg-red-600/30 transition"
                                         >
                                             Hapus
                                         </button>
