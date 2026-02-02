@@ -6,7 +6,7 @@ export default function AdminNavbar() {
   const handleLogout = () => {
     localStorage.removeItem("token");
     navigate("/admin/login", {
-      state: { message: "Berhasil logout" },
+      state: { successMsg: "Berhasil logout" },
     });
   };
 

@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import api from "../api/axios";
 import AuthCard from "../components/auth/AuthCard";
 import LoginForm from "../components/auth/LoginForm";
 import RegisterForm from "../components/auth/RegisterForm";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const Login = ({ isAdmin = false }) => {
   const navigate = useNavigate();
@@ -65,6 +65,21 @@ const Login = ({ isAdmin = false }) => {
       setIsLoading(false);
     }
   };
+
+  const location = useLocation();
+
+  useEffect(() => { 
+    if (location.state?.successMsg) {
+      setSuccessMsg(location.state.successMsg);
+
+      // bersihkan history agar tidak muncul saat refresh
+      window.history.replaceState({}, document.title);
+
+      // auto hide
+      const timer = setTimeout(() => setSuccessMsg(""), 4000);
+      return () => clearTimeout(timer);
+    }
+  }, [location]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#0a0a0a]">
