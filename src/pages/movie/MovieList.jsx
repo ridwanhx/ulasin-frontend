@@ -31,8 +31,8 @@ const MovieList = () => {
         const response = await api.get("/movies");
         setMovies(response.data.data);
       } catch (err) {
-          console.error("Gagal mengambil data film: ", err);
-          setMovies([]);
+        console.error("Gagal mengambil data film: ", err);
+        setMovies([]);
       } finally {
         setIsLoading(false);
       }
@@ -42,7 +42,6 @@ const MovieList = () => {
 
   return (
     <div className="min-h-screen bg-[#0a0a0a] text-white">
-
       {/* Header Halaman */}
       <header className="pt-24 pb-12 px-6 max-w-7xl mx-auto">
         {/* Tampilan pesan Logout (Floating Alert) */}
@@ -52,9 +51,7 @@ const MovieList = () => {
               <div className="w-8 h-8 rounded-full bg-green-500/20 flex items-center justify-center text-green-500">
                 ✓
               </div>
-              <p className="text-green-400 font-medium">
-                {logoutMsg}
-              </p>
+              <p className="text-green-400 font-medium">{logoutMsg}</p>
               <button
                 onClick={() => setLogoutMsg("")}
                 className="ml-auto text-gray-500 hover:text-white"
@@ -64,7 +61,7 @@ const MovieList = () => {
             </div>
           </div>
         )}
-        
+
         <div className="flex flex-col md:flex-row md-:items-end justify-between gap-4">
           <div>
             <h2 className="text-4xl font-extrabold mb-2">
