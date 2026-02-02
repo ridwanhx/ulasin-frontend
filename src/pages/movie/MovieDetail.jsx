@@ -17,6 +17,9 @@ const MovieDetail = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
 
+  // Success Message
+  const [successMsg, setSuccessMsg] = useState("");
+
   const token = localStorage.getItem("token");
 
   const fetchMovie = useCallback(async () => {
@@ -52,12 +55,16 @@ const MovieDetail = () => {
           skor: data.skor,
           komentar: data.komentar,
         },
-        { headers: { Authorization: `Bearer ${currentToken}` } }
+        { headers: { Authorization: `Bearer ${currentToken}` } },
       );
 
       setIsModalOpen(false);
+      setSuccessMsg("Ulasan berhasil dikirim. Semoga harimu menyenangkan! 🥰");
       setLoading(true);
       fetchMovie();
+
+      // Auto hide success message
+      setTimeout(() => setSuccessMsg(""), 4000);
     } catch (err) {
       setErrorMsg(err.response?.data?.message || "Gagal mengirim ulasan");
     } finally {
@@ -70,6 +77,24 @@ const MovieDetail = () => {
 
   return (
     <div className="min-h-screen bg-[#0a0a0a] text-white pb-20">
+      {/* Success Alert */}
+      {successMsg && (
+        <div className="fixed top-24 left-1/2 -translate-x-1/2 z-50 w-full max-w-lg px-4 animate-fade-in">
+          <div className="glass-card bg-green-500/10 border border-green-500/40 rounded-2xl p-4 flex items-center gap-3 shadow-xl">
+            <div className="w-8 h-8 rounded-full bg-green-500/20 flex items-center justify-center text-green-400">
+              ✓
+            </div>
+            <p className="text-green-400 font-medium text-sm">{successMsg}</p>
+            <button
+              onClick={() => setSuccessMsg("")}
+              className="ml-auto text-gray-400 hover:text-white"
+            >
+              ✕
+            </button>
+          </div>
+        </div>
+      )}
+
       <MovieHero
         movie={movie}
         isLoggedIn={!!token}
@@ -105,7 +130,5 @@ const LoadingSpinner = () => (
 );
 
 const NotFound = () => (
-  <div className="text-white text-center pt-20">
-    Film tidak ditemukan.
-  </div>
+  <div className="text-white text-center pt-20">Film tidak ditemukan.</div>
 );
