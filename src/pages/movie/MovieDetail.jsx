@@ -102,7 +102,7 @@ const MovieDetail = () => {
         onLoginClick={() => navigate("/login")}
       />
 
-      <ReviewList reviews={movie.Reviews} />
+      <ReviewList reviews={movie.reviews} />
 
       <ReviewModal
         isOpen={isModalOpen}
