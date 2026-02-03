@@ -1,4 +1,4 @@
-const API_URL = import.meta.env.VITE_ENV_URL;
+const API_URL = 'https://ulasin-backend-production.up.railway.app/api';
 
 // Get all movies
 export async function getMovies() {
