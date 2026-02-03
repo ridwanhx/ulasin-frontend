@@ -19,7 +19,7 @@ export default function Dashboard() {
 
         const totalMovies = movies.length;
         const totalReviews = movies.reduce(
-          (sum, m) => sum + (m.Reviews?.length || 0),
+          (sum, m) => sum + (m.reviews?.length || 0),
           0,
         );
 
