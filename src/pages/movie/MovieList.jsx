@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import api from "../../api/axios";
 import MovieCard from "../../components/movie/MovieCard";
 import { useLocation } from "react-router-dom";
+import { BackToTop } from "../../components/util/BackToTop";
 
 const MovieList = () => {
   const [movies, setMovies] = useState([]);
@@ -53,7 +54,10 @@ const MovieList = () => {
   ) : movies;
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a] text-white">
+    <div className="min-h-screen bg-[#0a0a0a] text-white relative">
+      {/* Back To Top button */}
+      <BackToTop></BackToTop>
+
       {/* Header Halaman */}
       <header className="pt-24 pb-12 px-6 max-w-7xl mx-auto">
         {/* Tampilan pesan Logout (Floating Alert) */}

@@ -6,6 +6,9 @@ import MovieHero from "../../components/movie/MovieHero";
 import ReviewList from "../../components/review/ReviewList";
 import ReviewModal from "../../components/review/ReviewModal";
 
+// Back to top button
+import { BackToTop } from "../../components/util/BackToTop";
+
 const MovieDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -77,6 +80,10 @@ const MovieDetail = () => {
 
   return (
     <div className="min-h-screen bg-[#0a0a0a] text-white pb-20">
+
+      {/* Back to top */}
+      <BackToTop/>
+
       {/* Success Alert */}
       {successMsg && (
         <div className="fixed top-24 left-1/2 -translate-x-1/2 z-50 w-full max-w-lg px-4 animate-fade-in">
