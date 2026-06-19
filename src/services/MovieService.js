@@ -1,4 +1,4 @@
-const API_URL = 'https://ulasin-backend-production.up.railway.app/api';
+const API_URL = 'http://localhost:8080/api';
 
 // Get all movies
 export async function getMovies() {
