@@ -1,0 +1,28 @@
+# Inisialisasi Container Docker versi Staging mode
+
+FROM node:26-alpine
+
+WORKDIR /app
+
+COPY package* .
+
+RUN npm install
+
+COPY . .
+
+# karena ini adalah proses preview/staging, maka kita perlu melakukan build terlebih dahulu
+RUN npm run build
+
+EXPOSE 3001
+
+# jalankan command preview
+CMD [ "npm", "run", "preview" ]
+
+# selanjutnya kita bisa menjalankan perintah berikut
+# docker build -t <nama_image>/<nama_project>:versi -f <nama_file_docker> .
+# -f => (digunakan untuk mencari / find file spesifik yang akan dituju)
+
+# contoh:
+# docker build -t reactjs-stg/ulasin-frontend:1.0.0 -f Dockerfile.stg .
+
+# lalu jalankan image nya, sama seperti pada saat menjalankan di development mode

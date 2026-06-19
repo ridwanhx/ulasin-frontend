@@ -1,0 +1,6 @@
+# inisialisasi setiap file dari project saat ini yang tidak boleh / di ignore di entry kedalam container
+
+node_modules
+.env
+dist
+*.log

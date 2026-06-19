@@ -1,0 +1,39 @@
+# Inisialisasi Container Docker versi Development mode
+
+# inisialisasi base image
+FROM node:26-alpine
+
+# inisialisasi work directory
+WORKDIR /app
+
+# copy file package.json kedalam workdir (di representasikan menggunakan tanda .)
+COPY package*.json .
+
+# cara manualnya bisa dituliskan seperti ini jika ingin meng-copy file package-lock.json, namun untuk cara mudahnya bisa kita tuliskan dengan menambahkan tanda * (akan meng-copy seluruh file yang awalannya "package" dan di akhiri .json). contohnya seperti diatas
+# COPY package-lock.json .
+
+# namun jika sudah yakin tidak ada penamaan file lain, kita juga bisa dengan cukup menuliskannya package* (tanpa diikuti .json)
+
+# ketika kita sudah meng-copy package nya ke dalam work directory, jalankan perintah npm install, atau bisa disingkat cukup RUN npm i
+RUN npm install
+
+# copy semua source (file/folder project saat ini) yang kita punya untuk dimasukkan kedalam container
+COPY . .
+
+# setelah kita melakukan setup environment diatas, selanjutnya inisialisasi perintah untuk me-running project
+CMD [ "npm", "run", "dev" ]
+
+# selanjutnya kita bisa melakukan build dengan cara membuka folder project saat ini via cmd, lalu jalankan perintah berikut :
+# docker build -t <nama_image>/<nama_project>:<versi> .
+# contoh :
+# docker build -t reactjs/ulasin-frontend:1.0.0 .
+
+# setelah image berhasil terbuild, kita bisa mengeceknya dengan perintah:
+# docker images (akan menampilkan list/daftar images yang berhasil ter-build)
+
+# selanjutnya kita bisa menjalankan projectnya dengan perintah berikut :
+# docker run -d -p 3000:3000 <nama_image>/<nama_image>:<versi>
+
+# notes
+# -d => untuk menjalankan project di balik layar, sehingga di terminalnya kita tidak perlu melihat log-log nya secara detail.
+# 3000:3000 => sebelah kanan adalah port didalam container, dan sebelah kiri adalah port yang terekspos ke public, dalam studi kasus ini, karena kita ingin mengekspos port yang sebelumnya kita inisialisasi (3000) untuk di ekspos sebagai port 3000 ke public.
